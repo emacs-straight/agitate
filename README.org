@@ -145,8 +145,9 @@ commits" are documented here: <https://www.conventionalcommits.org/en/v1.0.0/>.
   point.
 
 #+findex: agitate-log-view-kill-revision-expanded
-+ ~agitate-log-view-kill-revision-expanded~ :: PROTOTYPE.  Append to
-  ~kill-ring~ expanded message of log-view revision at point.
++ ~agitate-log-view-kill-revision-expanded~ :: Append to ~kill-ring~
+  expanded message of log-view revision at point (developers can also
+  check the private functions it uses).
 
 ** Extras for vc-git
 :PROPERTIES:
@@ -154,18 +155,22 @@ commits" are documented here: <https://www.conventionalcommits.org/en/v1.0.0/>.
 :END:
 
 #+findex: agitate-vc-git-show
-+ ~agitate-vc-git-show~ :: PROTOTYPE.  Prompt for commit and run
-  =git-show(1)= on it. With optional =CURRENT-FILE= as prefix
-  argument, limit the commits to those pertaining to the current file.
++ ~agitate-vc-git-show~ :: Prompt for commit and run =git-show(1)= on
+  it. With optional =CURRENT-FILE= as prefix argument, limit the
+  commits to those pertaining to the current file.  The number of
+  completion candidates is limited to the value of
+  ~vc-log-show-limit~.
 
 #+findex: agitate-vc-git-format-patch-single
-+ ~agitate-vc-git-format-patch-single~ :: Format patch for a
-  single =COMMIT=.  If in a log-view buffer, the =COMMIT= is the one
-  at point.  For the details of how that is determined, read the doc
++ ~agitate-vc-git-format-patch-single~ :: Format patch for a single
+  =COMMIT=.  If in a log-view buffer, the =COMMIT= is the one at
+  point.  For the details of how that is determined, read the doc
   string of ~agitate-log-view-kill-revision~.  If there is no such
   commit at point, prompt for =COMMIT= using minibuffer completion.
   Output the patch file to the return value of the function
-  ~vc-root-dir~.  Relevant except from the source code:
+  ~vc-root-dir~.  The number of completion candidates is limited to
+  the value of ~vc-log-show-limit~.  Relevant except from the source
+  code:
 
   #+begin_src emacs-lisp
   ;; TODO 2022-09-27: Handle the output directory better.  Though I am
@@ -173,6 +178,11 @@ commits" are documented here: <https://www.conventionalcommits.org/en/v1.0.0/>.
   ;; the current repo (and then clean it) or put everything in the
   ;; ~/Desktop or some dedicated "patches" directory.
   #+end_src
+
+#+findex: agitate-vc-git-format-patch-n-from-head
++ ~agitate-vc-git-format-patch-n-from-head~ :: Format patches covering
+  =NUMBER= of commits from current HEAD.  This is the eqvuivalent of:
+  =git format-patch -NUMBER=.
 
 #+findex: agitate-vc-git-grep
 + ~agitate-vc-git-grep~ :: Run =git-grep(1)= for =REGEXP= in
@@ -183,10 +193,13 @@ commits" are documented here: <https://www.conventionalcommits.org/en/v1.0.0/>.
 
 #+findex: agitate-vc-git-kill-commit-message
 + ~agitate-vc-git-kill-commit-message~ :: Append to ~kill-ring~
-  message of commit with HASH identifier. q When called interactively,
-  prompt for =HASH= using minibuffer completion.  When point is in a
-  log-view buffer, make the revision at point the default value of the
-  prompt.  This is useful to quote a past commit message.
+  message of commit with =HASH= identifier.  When called
+  interactively, prompt for =HASH= using minibuffer completion.  When
+  point is in a log-view buffer, make the revision at point the
+  default value of the prompt (though also see the command
+  ~agitate-log-view-kill-revision-expanded~).  The number of
+  completion candidates is limited to the value of
+  ~vc-log-show-limit~.
 
 #+findex: agitate-vc-git-push-prompt-for-remote
 + ~agitate-vc-git-push-prompt-for-remote~ :: Behave like ~vc-git-push~
@@ -267,7 +280,7 @@ Everything is in place to set up the package.
 
 ;; Agitate is still a WORK-IN-PROGRESS.
 
-(require 'agitate "/home/prot/Git/Projects/agitate/agitate.el")
+(require 'agitate)
 
 (add-hook 'diff-mode-hook #'agitate-diff-enable-outline-minor-mode)
 

@@ -70,6 +70,18 @@ will render those as their corresponding graphical emoji."
   :type '(repeat string)
   :group 'agitate)
 
+(defun agitate--completion-table-no-sort (candidates &optional category annotation)
+  "Make completion table for CANDIDATES with sorting disabled.
+CATEGORY is the completion category.
+ANNOTATION is an annotation function."
+  (lambda (str pred action)
+    (if (eq action 'metadata)
+        `(metadata (display-sort-function . identity)
+                   (cycle-sort-function . identity)
+                   (annotation-function . ,annotation)
+                   (category . ,category))
+      (complete-with-action action candidates str pred))))
+
 ;;;; Commands for diff-mode
 
 (defvar-local agitate--refine-diff-state nil
@@ -94,6 +106,7 @@ fontification."
        (setq agitate--refine-diff-state 'all)
        (message "Diff refine ALL"))
       ('all
+       (setq-local diff-refine nil)
        (revert-buffer)
        (goto-char point)
        (recenter)
@@ -230,6 +243,15 @@ to the text at point."
     (kill-new (format "%s" revision))
     (message "Copied: %s" revision)))
 
+(defun agitate--log-view-on-revision-p (&optional pos)
+  "Return non-nil if optional POS is on a revision line.
+When POS is nil, use `point'."
+  (when-let ((point (or pos (point)))
+             ((not (log-view-inside-comment-p point))))
+    (save-excursion
+      (goto-char (line-beginning-position))
+      (looking-at log-view-message-re))))
+
 (defun agitate--log-view-revision-expanded-bounds (&optional back)
   "Return position of expanded log-view message.
 With optional BACK, find the beginning, else the end."
@@ -241,25 +263,28 @@ With optional BACK, find the beginning, else the end."
       (forward-line (nth 2 motion))
       (point))))
 
-  ;; TODO 2022-09-28: Maybe have a do-what-I-mean behaviour to expand
-  ;; the entry if necessary?  Or maybe expand it to get the message
-  ;; and then contract it again?  Keeping it simple seems appropriate,
-  ;; but we will see how this evolves.
+(defun agitate--log-view-kill-message (pos)
+  "Do what `agitate-log-view-kill-revision-expanded' describes for POS."
+  (kill-new
+   (buffer-substring-no-properties
+    (agitate--log-view-revision-expanded-bounds :back)
+    (agitate--log-view-revision-expanded-bounds)))
+  (message "Copied message of `%s' revision"
+           (save-excursion (cadr (log-view-current-entry pos t)))))
 
 ;;;###autoload
 (defun agitate-log-view-kill-revision-expanded ()
-  "PROTOTYPE Append to `kill-ring' expanded message of log-view revision at point."
+  "Append to `kill-ring' expanded message of log-view revision at point."
   (interactive nil log-view-mode)
-  (let ((pos (point)))
-    ;; TODO 2022-09-28: Also test when we are on the line of the
-    ;; revision, with the expanded entry right below.
-    (when (log-view-inside-comment-p pos)
-      (kill-new
-       (buffer-substring-no-properties
-        (agitate--log-view-revision-expanded-bounds :back)
-        (agitate--log-view-revision-expanded-bounds)))
-      (message "Copied message of `%s' revision"
-               (cadr (log-view-current-entry pos t))))))
+  (let ((pos (point))
+        opos)
+    (when (agitate--log-view-on-revision-p pos)
+      (setq opos (point))
+      (forward-line 1)
+      (setq pos (point)))
+    (if (log-view-inside-comment-p pos)
+        (agitate--log-view-kill-message pos)
+      (goto-char opos))))
 
 ;;;; Commands for vc-git (Git backend for the Version Control framework)
 
@@ -275,36 +300,51 @@ With optional LONG do not abbreviate commit hashes."
   (let* ((prompt (if file
                      (format "Select revision of `%s': " file)
                    "Select revision: "))
-         (commit-format (if long "--pretty=oneline" "--oneline"))
          (default-directory (vc-root-dir)))
     (completing-read
      prompt
-     (process-lines vc-git-program "log" commit-format (or file "--"))
+     ;; TODO 2022-09-29: Define a completion category that can work
+     ;; with `consult', `embark', `marginalia', and friends?
+     ;;
+     ;; TODO 2022-09-29: Define an annotation function?  Though we can
+     ;; just tweak the git arguments.
+     (agitate--completion-table-no-sort
+      (process-lines
+       vc-git-program "log"
+       (format "-n %d" vc-log-show-limit)
+       (if long "--pretty=oneline" "--oneline")
+       (or file "--")))
      nil t)))
-
-(defvar agitate-vc-git-show-buffer "*agitate-vc-git-show*"
-  "Buffer for showing a git commit.")
 
 ;;;###autoload
 (defun agitate-vc-git-show (&optional current-file)
-  "PROTOTYPE.
-
-Prompt for commit and run `git-show(1)' on it.
+  "Prompt for commit and run `git-show(1)' on it.
 With optional CURRENT-FILE as prefix argument, limit the commits
-to those pertaining to the current file."
+to those pertaining to the current file.
+
+The number of completion candidates is limited to the value of
+`vc-log-show-limit'."
   (declare (interactive-only t))
   (interactive "P")
-  (when-let* ((file (caadr (vc-deduce-fileset))) ; FIXME 2022-09-27: Better way to get current file?
-              (revision (agitate--vc-git-get-hash-from-string
-                         (agitate--vc-git-commit-prompt
-                          (when current-file file))))
-              (buf "*agitate-vc-git-show*"))
-    (apply 'vc-git-command (get-buffer-create buf) nil (when current-file file)
-           (list "show" "--patch-with-stat" revision))
-    ;; TODO 2022-09-27: What else do we need to set up in such a
-    ;; buffer?
-    (with-current-buffer (pop-to-buffer buf)
-      (diff-mode))))
+  (when-let ((file (caadr (vc-deduce-fileset))))
+    (let* ((f (when current-file file))
+           (revision (agitate--vc-git-get-hash-from-string
+                      (agitate--vc-git-commit-prompt
+                       f)))
+           (buf "*agitate-vc-git-show*")
+           (args (list "show" "--patch-with-stat" revision)))
+      (apply 'vc-git-command (get-buffer-create buf) nil f args)
+      ;; TODO 2022-09-27: What else do we need to set up in such a
+      ;; buffer?
+      (with-current-buffer (pop-to-buffer buf)
+        (diff-mode)
+        (setq-local revert-buffer-function
+                    (lambda (_ignore-auto _noconfirm)
+                      (let ((inhibit-read-only t))
+                        (erase-buffer)
+                        (apply 'vc-git-command (get-buffer buf) nil f args)
+                        (goto-char (point-min)))))
+        (goto-char (point-min))))))
 
 (defun agitate--vc-git-format-patch-single-commit ()
   "Help `agitate-vc-git-format-patch-single' with its COMMIT."
@@ -324,7 +364,10 @@ If there is no such commit at point, prompt for COMMIT using
 minibuffer completion.
 
 Output the patch file to the return value of the function
-`vc-root-dir'."
+`vc-root-dir'.
+
+The number of completion candidates is limited to the value of
+`vc-log-show-limit'."
   (interactive (list (agitate--vc-git-format-patch-single-commit)))
   ;; TODO 2022-09-27: Handle the output directory better.  Though I am
   ;; not sure how people work with those.  I normally use the root of
@@ -334,6 +377,16 @@ Output the patch file to the return value of the function
               (default-directory root))
     (apply 'vc-git-command nil nil nil
            (list "format-patch" "-1" commit "--"))))
+
+;;;###autoload
+(defun agitate-vc-git-format-patch-n-from-head (number)
+  "Format patches covering NUMBER of commits from current HEAD.
+This is the eqvuivalent of: git format-patch -NUMBER."
+  (interactive (list (read-number "git format-patch -NUMBER: ")))
+  (if (natnump number)
+      (apply 'vc-git-command nil 0 nil
+             (list "format-patch" (format "-%d" number)))
+    (user-error "NUMBER must satisfy `natnump'; `%s' does not" number)))
 
 ;;;###autoload
 (defun agitate-vc-git-grep (regexp)
@@ -364,7 +417,11 @@ arguments."
          (default-directory (vc-root-dir)))
     (completing-read
      prompt
-     (process-lines vc-git-program "log" "--oneline" "--")
+     (agitate--completion-table-no-sort
+      (process-lines
+       vc-git-program "log"
+       (format "-n %d" vc-log-show-limit)
+       "--oneline" "--"))
      nil t nil
      'agitate--vc-git-kill-commit-message-history default-value)))
 
@@ -375,9 +432,11 @@ When called interactively, prompt for HASH using minibuffer
 completion.
 
 When point is in a log-view buffer, make the revision at point
-the default value of the prompt.
+the default value of the prompt (though also see the command
+`agitate-log-view-kill-revision-expanded').
 
-This is useful to quote a past commit message."
+The number of completion candidates is limited to the value of
+`vc-log-show-limit'."
   (interactive
    (list
     (agitate--vc-git-get-hash-from-string
