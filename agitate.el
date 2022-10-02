@@ -223,6 +223,87 @@ Prompt for entry among those declared in
      'agitate--log-edit-conventional-commits-history)
     ": ")))
 
+;;;;; log-edit "informative" window configuration mode
+
+(defcustom agitate-log-edit-informative-show-files t
+  "Show applicable files with `agitate-log-edit-informative-mode'."
+  :type 'boolean
+  :group 'agitate)
+
+(defcustom agitate-log-edit-informative-show-root-log nil
+  "Show root revision log with `agitate-log-edit-informative-mode'."
+  :type 'boolean
+  :group 'agitate)
+
+(defvar agitate--previous-window-configuration nil
+  "Store the last window configuration.")
+
+;; FIXME 2022-10-01: What happens if the user changes the window
+;; layout after they entre this view but before finalising the
+;; log-edit?  That would restore the last window configuration, but is
+;; that the right thing?  Should we dedicate buffers to their windows
+;; and make it unbreakable?  Feels too much...  I think keeping it
+;; simple is better.
+;;;###autoload
+(define-minor-mode agitate-log-edit-informative-mode
+  "PROTOTYPE Apply a specific window configuation when entering log-view mode.
+Restore the last window configuration when finalising log-view."
+  :init-value nil
+  :global t
+  (if agitate-log-edit-informative-mode
+      (progn
+        (add-hook 'log-edit-hook #'agitate--log-edit-informative-setup)
+        (add-hook 'log-edit-mode-hook #'agitate--log-edit-informative-handle-kill-buffer))
+    (remove-hook 'log-edit-hook #'agitate--log-edit-informative-setup)
+    (remove-hook 'log-edit-mode-hook #'agitate--log-edit-informative-handle-kill-buffer)))
+
+;; TODO 2022-10-01: Display it below log edit buf?  Or be
+;; unopinionated about it?  I think placing it below the `log-edit'
+;; buffer looks best, with the `log-edit-show-files' further below it
+;; and the diff to their right.
+
+;; TODO 2022-10-01: Does the CURRENT-FILES make sense?  Will it be
+;; helpful or will it cause confusion?  If it is useful, the idea is
+;; to add a `defcustom' for it.
+
+;;;###autoload
+(defun agitate-log-edit-show-root-log (&optional current-files)
+  "PROTOTYPE Like `vc-print-root-log' for `log-edit' buffers.
+When optional CURRENT-FILES is non-nil, limit the revision log to
+the `log-edit-files'."
+  (when-let* ((files (log-edit-files))
+              ;; FIXME 2022-10-01: What happens with backends that do
+              ;; not support short logs?  Do we need to handle
+              ;; anything here?
+              (vc-log-short-style '(file)))
+    (vc-print-log-internal
+     (vc-responsible-backend default-directory)
+     (when current-files files) nil nil vc-log-show-limit)))
+
+(defun agitate--log-edit-informative-setup ()
+  "Set up informative `log-edit' window configuration."
+  (setq agitate--previous-window-configuration (current-window-configuration))
+  (delete-other-windows)
+  (add-hook 'log-edit-done-hook #'agitate--log-edit-informative-restore nil t)
+  (add-hook 'log-edit-hook #'agitate--log-edit-informative-restore nil t)
+  (save-selected-window
+    (log-edit-show-diff))
+  (if agitate-log-edit-informative-show-files
+      (log-edit-show-files)
+    (log-edit-hide-buf log-edit-files-buf))
+  (when agitate-log-edit-informative-show-root-log
+    (save-selected-window
+      (agitate-log-edit-show-root-log))))
+
+(defun agitate--log-edit-informative-restore ()
+  "Restore `agitate--previous-window-configuration'."
+  (set-window-configuration agitate--previous-window-configuration))
+
+(defun agitate--log-edit-informative-handle-kill-buffer ()
+  "Restore `agitate--previous-window-configuration' if killed."
+  (when (derived-mode-p 'log-edit-mode)
+    (add-hook 'kill-buffer-hook #'agitate--log-edit-informative-restore 0 t)))
+
 ;;;; Commands for log-view (listings of commits)
 
 ;;;###autoload
@@ -345,6 +426,38 @@ The number of completion candidates is limited to the value of
                         (apply 'vc-git-command (get-buffer buf) nil f args)
                         (goto-char (point-min)))))
         (goto-char (point-min))))))
+
+(defun agitate--vc-git-tag-prompt ()
+  "Prompt for Git tag."
+  (when-let* ((default-directory (vc-root-dir)))
+    (completing-read
+     "Select tag: "
+     (agitate--completion-table-no-sort
+      (process-lines
+       vc-git-program "tag"
+       "--"))
+     nil t)))
+
+;;;###autoload
+(defun agitate-vc-git-show-tag (tag)
+  "Run `git-show(1)' on Git TAG.
+When called interactively, prompt for TAG using minibuffer
+completion."
+  (interactive (list (agitate--vc-git-tag-prompt)))
+  (let* ((buf "*agitate-vc-git-show*")
+         (args (list "show" tag)))
+    (apply 'vc-git-command (get-buffer-create buf) nil nil args)
+    ;; TODO 2022-09-27: What else do we need to set up in such a
+    ;; buffer?
+    (with-current-buffer (pop-to-buffer buf)
+      (diff-mode)
+      (setq-local revert-buffer-function
+                  (lambda (_ignore-auto _noconfirm)
+                    (let ((inhibit-read-only t))
+                      (erase-buffer)
+                      (apply 'vc-git-command (get-buffer buf) nil nil args)
+                      (goto-char (point-min)))))
+      (goto-char (point-min)))))
 
 (defun agitate--vc-git-format-patch-single-commit ()
   "Help `agitate-vc-git-format-patch-single' with its COMMIT."
