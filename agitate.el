@@ -249,8 +249,8 @@ Prompt for entry among those declared in
 ;; layout after they entre this view but before finalising the
 ;; log-edit?  That would restore the last window configuration, but is
 ;; that the right thing?  Should we dedicate buffers to their windows
-;; and make it unbreakable?  Feels too much...  I think keeping it
-;; simple is better.
+;; and make it unbreakable?  Use atomic windows?  Feels too much...  I
+;; think keeping it simple is better.
 ;;;###autoload
 (define-minor-mode agitate-log-edit-informative-mode
   "PROTOTYPE Apply a specific window configuation when entering log-view mode.
@@ -384,10 +384,9 @@ With optional BACK, find the beginning, else the end."
   (when (string-match "\\b\\([0-9a-z]+\\)\\(\s+\\)?" string)
     (match-string 1 string)))
 
-(defun agitate--vc-git-commit-prompt (&optional file long)
+(defun agitate--vc-git-commit-prompt (&optional file)
   "Prompt for Git commit and return it as a string.
 With optional FILE, limit the commits to those pertinent to it.
-With optional LONG do not abbreviate commit hashes.
 
 The number of revisions in the log is controlled by the user
 option `agitate-log-limit'."
@@ -406,8 +405,9 @@ option `agitate-log-limit'."
       (process-lines
        vc-git-program "log"
        (format "-n %d" agitate-log-limit)
-       (if long "--pretty=oneline" "--oneline")
-       (or file "--")))
+       "--pretty=format:%h  %ad  %an: %s"
+       "--date=short"
+       "--"))
      nil t)))
 
 ;;;###autoload
@@ -547,13 +547,27 @@ arguments."
       (process-lines
        vc-git-program "log"
        (format "-n %d" agitate-log-limit)
-       "--oneline" "--"))
+       "--pretty=format:%h  %ad  %an: %s"
+       "--date=short"
+       "--"))
      nil t nil
      'agitate--vc-git-kill-commit-message-history default-value)))
 
-;; TODO 2022-10-03: Either add a command that copies just the hash
-;; from a completion prompt, or make this accept a prefix argument.  I
-;; prefer a separate command.
+;;;###autoload
+(defun agitate-vc-git-kill-commit-hash ()
+  "Append to `kill-ring' hash of commit.
+Prompt for commit using minibuffer completion.  The number of
+revisions in the log is controlled by the user option
+`agitate-log-limit'.
+
+To kill the message of the commit, use the command
+`agitate-vc-git-kill-commit-message'."
+  (declare (interactive-only t))
+  (interactive)
+  (let ((hash (agitate--vc-git-get-hash-from-string
+               (agitate--vc-git-kill-commit-message-prompt))))
+    (kill-new hash)
+    (message "Added `%s' to `kill-ring'" hash)))
 
 ;;;###autoload
 (defun agitate-vc-git-kill-commit-message (hash)
@@ -566,7 +580,10 @@ the default value of the prompt (though also see the command
 `agitate-log-view-kill-revision-expanded').
 
 The number of revisions in the log is controlled by the user
-option `agitate-log-limit'."
+option `agitate-log-limit'.
+
+To kill only the commit hash, use the command
+`agitate-vc-git-kill-commit-hash'."
   (interactive
    (list
     (agitate--vc-git-get-hash-from-string
