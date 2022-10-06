@@ -425,9 +425,8 @@ option `agitate-log-limit'."
            (revision (agitate--vc-git-get-hash-from-string
                       (agitate--vc-git-commit-prompt
                        f)))
-           (buf "*agitate-vc-git-show*")
-           (args (list "show" "--patch-with-stat" revision)))
-      (apply 'vc-git-command (get-buffer-create buf) nil f args)
+           (buf "*agitate-vc-git-show*"))
+      (vc-git--call (get-buffer-create buf) "show" "--patch-with-stat" revision)
       ;; TODO 2022-09-27: What else do we need to set up in such a
       ;; buffer?
       (with-current-buffer (pop-to-buffer buf)
@@ -436,7 +435,7 @@ option `agitate-log-limit'."
                     (lambda (_ignore-auto _noconfirm)
                       (let ((inhibit-read-only t))
                         (erase-buffer)
-                        (apply 'vc-git-command (get-buffer buf) nil f args)
+                        (vc-git--call buf "show" "--patch-with-stat" revision)
                         (goto-char (point-min)))))
         (goto-char (point-min))))))
 
@@ -457,9 +456,8 @@ option `agitate-log-limit'."
 When called interactively, prompt for TAG using minibuffer
 completion."
   (interactive (list (agitate--vc-git-tag-prompt)))
-  (let* ((buf "*agitate-vc-git-show*")
-         (args (list "show" tag)))
-    (apply 'vc-git-command (get-buffer-create buf) nil nil args)
+  (let* ((buf "*agitate-vc-git-show*"))
+    (vc-git--call (get-buffer-create buf) "show" tag)
     ;; TODO 2022-09-27: What else do we need to set up in such a
     ;; buffer?
     (with-current-buffer (pop-to-buffer buf)
@@ -468,7 +466,7 @@ completion."
                   (lambda (_ignore-auto _noconfirm)
                     (let ((inhibit-read-only t))
                       (erase-buffer)
-                      (apply 'vc-git-command (get-buffer buf) nil nil args)
+                      (vc-git--call buf "show" tag)
                       (goto-char (point-min)))))
       (goto-char (point-min)))))
 
@@ -501,8 +499,7 @@ option `agitate-log-limit'."
   ;; ~/Desktop or some dedicated "patches" directory.
   (when-let* ((root (vc-root-dir))
               (default-directory root))
-    (apply 'vc-git-command nil nil nil
-           (list "format-patch" "-1" commit "--"))))
+    (vc-git--call nil "format-patch" "-1" commit "--")))
 
 ;;;###autoload
 (defun agitate-vc-git-format-patch-n-from-head (number)
@@ -510,8 +507,7 @@ option `agitate-log-limit'."
 This is the eqvuivalent of: git format-patch -NUMBER."
   (interactive (list (read-number "git format-patch -NUMBER: ")))
   (if (natnump number)
-      (apply 'vc-git-command nil 0 nil
-             (list "format-patch" (format "-%d" number)))
+      (vc-git--call nil "format-patch" (format "-%d" number))
     (user-error "NUMBER must satisfy `natnump'; `%s' does not" number)))
 
 ;;;###autoload
@@ -590,7 +586,7 @@ To kill only the commit hash, use the command
      (agitate--vc-git-kill-commit-message-prompt))))
   (kill-new
    (with-temp-buffer
-     (apply 'vc-git-command t nil nil (list "show" hash "--stat" "--no-color" "--"))
+     (vc-git--call t "show" "--stat" "--no-color" hash "--")
      (buffer-substring-no-properties (point-min) (point-max))))
   (message "Added %s commit message to `kill-ring'" hash))
 
