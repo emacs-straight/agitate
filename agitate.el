@@ -264,17 +264,12 @@ Restore the last window configuration when finalising log-view."
     (remove-hook 'log-edit-hook #'agitate--log-edit-informative-setup)
     (remove-hook 'log-edit-mode-hook #'agitate--log-edit-informative-handle-kill-buffer)))
 
-;; TODO 2022-10-01: Display it below log edit buf?  Or be
-;; unopinionated about it?  I think placing it below the `log-edit'
-;; buffer looks best, with the `log-edit-show-files' further below it
-;; and the diff to their right.
-
-;; TODO 2022-10-01: Does the CURRENT-FILES make sense?  Will it be
-;; helpful or will it cause confusion?  If it is useful, the idea is
-;; to add a `defcustom' for it.
-
 (defun agitate--log-edit-informative-setup ()
   "Set up informative `log-edit' window configuration."
+  ;; FIXME 2022-10-13: The window configuration needs to be saved at
+  ;; an earlier stage.  Hooking it to 'vc-before-checkin-hook' or
+  ;; `vc-checkin-hook' seems appropriate, though it then breaks the
+  ;; C-c C-c in log-edit buffers (the C-c C-k works).
   (setq agitate--previous-window-configuration (current-window-configuration))
   (delete-other-windows)
   (add-hook 'log-edit-done-hook #'agitate--log-edit-informative-restore nil t)
@@ -284,6 +279,9 @@ Restore the last window configuration when finalising log-view."
   (if agitate-log-edit-informative-show-files
       (log-edit-show-files)
     (log-edit-hide-buf log-edit-files-buf))
+  ;; FIXME 2022-10-13: `let' bind a display-buffer-alist entry to show
+  ;; this below the current window.  Otherwise this does not work as
+  ;; intended, since it replaces the log-edit buffer.
   (when agitate-log-edit-informative-show-root-log
     (save-selected-window
       (let ((vc-log-show-limit agitate-log-limit))
