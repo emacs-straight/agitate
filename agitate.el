@@ -276,6 +276,7 @@ Restore the last window configuration when finalising log-view."
   (delete-other-windows)
   (add-hook 'log-edit-done-hook #'agitate--log-edit-informative-restore nil t)
   (add-hook 'log-edit-hook #'agitate--log-edit-informative-restore nil t)
+  ;; FIXME 2022-10-18: Fails in an empty repo.
   (save-selected-window
     (log-edit-show-diff))
   (if agitate-log-edit-informative-show-files
@@ -394,6 +395,19 @@ option `agitate-log-limit'."
        "--date=short"
        "--"))
      nil t)))
+
+;;;###autoload
+(defun agitate-vc-git-find-revision ()
+  "Find revision of current file, visiting it in a buffer.
+Prompt with completion for the revision."
+  (declare (interactive-only t))
+  (interactive)
+  (when-let* ((fileset (vc-deduce-fileset))
+              (file (caadr fileset))
+              (revision (agitate--vc-git-get-hash-from-string
+                         (agitate--vc-git-commit-prompt
+                          file))))
+    (pop-to-buffer (vc-find-revision file revision (car fileset)))))
 
 ;;;###autoload
 (defun agitate-vc-git-show (&optional current-file)
