@@ -244,61 +244,85 @@ Prompt for entry among those declared in
 
 ;;;;; log-edit "informative" window configuration mode
 
-(defvar agitate--previous-window-configuration nil
-  "Store the last window configuration.")
-
-;; FIXME 2022-10-01: What happens if the user changes the window
-;; layout after they entre this view but before finalising the
-;; log-edit?  That would restore the last window configuration, but is
-;; that the right thing?  Should we dedicate buffers to their windows
-;; and make it unbreakable?  Use atomic windows?  Feels too much...  I
-;; think keeping it simple is better.
 ;;;###autoload
 (define-minor-mode agitate-log-edit-informative-mode
-  "PROTOTYPE Apply a specific window configuation when entering log-view mode.
-Restore the last window configuration when finalising log-view."
+  "Apply a specific window configuation when entering `log-edit'.
+
+Show the `log-edit' window on the left, with the corresponding
+diff on the right.
+
+If `agitate-log-edit-informative-show-root-log' is non-nil, run
+`vc-print-root-log' subject to `agitate-log-limit'.  Display it
+below the `log-edit' window.
+
+If `agitate-log-edit-informative-show-files' is non-nil, show the
+`log-edit-files' further below.
+
+Restore the last window configuration when finalising `log-edit',
+either with `log-edit-kill-buffer' or `log-edit-done'.
+
+Always kill the buffer used to perform the editing.  Ignore the
+user option `log-edit-keep-buffer'."
   :init-value nil
   :global t
   (if agitate-log-edit-informative-mode
       (progn
+        (add-hook 'vc-before-checkin-hook #'agitate--log-edit-informative-save-windows)
         (add-hook 'log-edit-hook #'agitate--log-edit-informative-setup)
-        (add-hook 'log-edit-mode-hook #'agitate--log-edit-informative-handle-kill-buffer))
+        (add-hook 'vc-checkin-hook #'agitate--log-edit-informative-restore)
+        (add-hook 'vc-checkin-hook #'agitate--log-edit-informative-kill-buffer))
+    (remove-hook 'vc-before-checkin-hook #'agitate--log-edit-informative-save-windows)
     (remove-hook 'log-edit-hook #'agitate--log-edit-informative-setup)
-    (remove-hook 'log-edit-mode-hook #'agitate--log-edit-informative-handle-kill-buffer)))
+    (remove-hook 'vc-checkin-hook #'agitate--log-edit-informative-restore)
+    (remove-hook 'vc-checkin-hook #'agitate--log-edit-informative-kill-buffer)))
+
+(defvar agitate--previous-window-configuration nil
+  "Store the last window configuration.")
+
+(defvar agitate--previous-window-point nil
+  "Store the last window `point'.")
+
+(defun agitate--log-edit-informative-save-windows ()
+  "Save `current-window-configuration'."
+  (setq agitate--previous-window-point (point)
+        agitate--previous-window-configuration (current-window-configuration)))
 
 (defun agitate--log-edit-informative-setup ()
   "Set up informative `log-edit' window configuration."
-  ;; FIXME 2022-10-13: The window configuration needs to be saved at
-  ;; an earlier stage.  Hooking it to 'vc-before-checkin-hook' or
-  ;; `vc-checkin-hook' seems appropriate, though it then breaks the
-  ;; C-c C-c in log-edit buffers (the C-c C-k works).
-  (setq agitate--previous-window-configuration (current-window-configuration))
   (delete-other-windows)
-  (add-hook 'log-edit-done-hook #'agitate--log-edit-informative-restore nil t)
-  (add-hook 'log-edit-hook #'agitate--log-edit-informative-restore nil t)
-  ;; FIXME 2022-10-18: Fails in an empty repo.
-  (save-selected-window
-    (log-edit-show-diff))
-  (if agitate-log-edit-informative-show-files
-      (log-edit-show-files)
-    (log-edit-hide-buf log-edit-files-buf))
-  (when agitate-log-edit-informative-show-root-log
+  (add-hook 'kill-buffer-hook #'agitate--log-edit-informative-restore nil t)
+  ;; FIXME 2022-10-19: Fails in an empty repo.  It is not nice to use
+  ;; `ignore-errors', as we should not display any window in such a
+  ;; scenario.  Which VC function can check for a repo without
+  ;; revisions?
+  (ignore-errors
     (save-selected-window
-      (let ((vc-log-show-limit agitate-log-limit)
-            (display-buffer-alist
-             (cons (list (cons 'derived-mode 'log-view-mode)
-                         (list 'display-buffer-below-selected))
-                   display-buffer-alist)))
-        (vc-print-root-log)))))
+      (log-edit-show-diff))
+    (if agitate-log-edit-informative-show-files
+        (log-edit-show-files)
+      (log-edit-hide-buf log-edit-files-buf))
+    (when agitate-log-edit-informative-show-root-log
+      (save-selected-window
+        (let ((vc-log-show-limit agitate-log-limit)
+              (display-buffer-alist
+               (cons (list (cons 'derived-mode 'log-view-mode)
+                           (list 'display-buffer-below-selected))
+                     display-buffer-alist)))
+          (vc-print-root-log))))))
 
 (defun agitate--log-edit-informative-restore ()
-  "Restore `agitate--previous-window-configuration'."
-  (set-window-configuration agitate--previous-window-configuration))
+  "Restore `agitate--previous-window-configuration' and clean state."
+  (when agitate--previous-window-configuration
+    (set-window-configuration agitate--previous-window-configuration)
+    (setq agitate--previous-window-configuration nil))
+  (when agitate--previous-window-point
+    (goto-char agitate--previous-window-point)
+    (setq agitate--previous-window-point nil)))
 
-(defun agitate--log-edit-informative-handle-kill-buffer ()
-  "Restore `agitate--previous-window-configuration' if killed."
-  (when (derived-mode-p 'log-edit-mode)
-    (add-hook 'kill-buffer-hook #'agitate--log-edit-informative-restore 0 t)))
+(defun agitate--log-edit-informative-kill-buffer ()
+  "Kill the vc-log buffer."
+  ;; TODO 2022-10-19: More robust way to get the buffer?
+  (kill-buffer (get-buffer "*vc-log*")))
 
 ;;;; Commands for log-view (listings of commits)
 
@@ -382,24 +406,26 @@ option `agitate-log-limit'."
          (default-directory (vc-root-dir)))
     (completing-read
      prompt
-     ;; TODO 2022-09-29: Define a completion category that can work
-     ;; with `consult', `embark', `marginalia', and friends?
-     ;;
-     ;; TODO 2022-09-29: Define an annotation function?  Though we can
-     ;; just tweak the git arguments.
      (agitate--completion-table-no-sort
       (process-lines
        vc-git-program "log"
        (format "-n %d" agitate-log-limit)
        "--pretty=format:%h  %ad  %an: %s"
        "--date=short"
-       "--"))
+       (or file "--")))
      nil t)))
 
 ;;;###autoload
 (defun agitate-vc-git-find-revision ()
   "Find revision of current file, visiting it in a buffer.
-Prompt with completion for the revision."
+Prompt with completion for the revision.
+
+The number of revisions in the log is controlled by the user
+option `agitate-log-limit'.
+
+Pro tip: if you are using the `embark' package, you can produce a
+snapshot of the minibuffer prompt.  Then use the resulting buffer
+to browse through the file's history."
   (declare (interactive-only t))
   (interactive)
   (when-let* ((fileset (vc-deduce-fileset))
@@ -409,6 +435,14 @@ Prompt with completion for the revision."
                           file))))
     (pop-to-buffer (vc-find-revision file revision (car fileset)))))
 
+(defun agitate--vc-git-show-revert (&rest args)
+  "Run `vc-git--call' with ARGS.
+This is a helper for git-show(1) `revert-buffer-function'."
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (apply 'vc-git--call args)
+    (goto-char (point-min))))
+
 ;;;###autoload
 (defun agitate-vc-git-show (&optional current-file)
   "Prompt for commit and run `git-show(1)' on it.
@@ -416,7 +450,11 @@ With optional CURRENT-FILE as prefix argument, limit the commits
 to those pertaining to the current file.
 
 The number of revisions in the log is controlled by the user
-option `agitate-log-limit'."
+option `agitate-log-limit'.
+
+Pro tip: if you are using the `embark' package, you can produce a
+snapshot of the minibuffer prompt.  Then use the resulting buffer
+to browse through the available commits."
   (declare (interactive-only t))
   (interactive "P")
   (when-let ((file (caadr (vc-deduce-fileset))))
@@ -424,18 +462,16 @@ option `agitate-log-limit'."
            (revision (agitate--vc-git-get-hash-from-string
                       (agitate--vc-git-commit-prompt
                        f)))
-           (buf "*agitate-vc-git-show*"))
-      (vc-git--call (get-buffer-create buf) "show" "--patch-with-stat" revision)
-      ;; TODO 2022-09-27: What else do we need to set up in such a
-      ;; buffer?
+           (buf "*agitate-vc-git-show*")
+           (inhibit-read-only t))
+      (with-current-buffer (get-buffer-create buf)
+        (erase-buffer))
+      (vc-git--call buf "show" "--patch-with-stat" revision)
       (with-current-buffer (pop-to-buffer buf)
         (diff-mode)
         (setq-local revert-buffer-function
                     (lambda (_ignore-auto _noconfirm)
-                      (let ((inhibit-read-only t))
-                        (erase-buffer)
-                        (vc-git--call buf "show" "--patch-with-stat" revision)
-                        (goto-char (point-min)))))
+                        (agitate--vc-git-show-revert buf "show" "--patch-with-stat" revision)))
         (goto-char (point-min))))))
 
 (defun agitate--vc-git-tag-prompt ()
@@ -453,20 +489,23 @@ option `agitate-log-limit'."
 (defun agitate-vc-git-show-tag (tag)
   "Run `git-show(1)' on Git TAG.
 When called interactively, prompt for TAG using minibuffer
-completion."
+completion.
+
+Pro tip: if you are using the `embark' package, you can produce a
+snapshot of the minibuffer prompt.  Then use the resulting buffer
+to browse through the available tags."
   (interactive (list (agitate--vc-git-tag-prompt)))
-  (let* ((buf "*agitate-vc-git-show*"))
-    (vc-git--call (get-buffer-create buf) "show" tag)
-    ;; TODO 2022-09-27: What else do we need to set up in such a
-    ;; buffer?
+  (let* ((buf "*agitate-vc-git-show*")
+         (inhibit-read-only t))
+    (with-current-buffer (get-buffer-create buf)
+        (erase-buffer))
+    (vc-git--call buf "show" tag)
     (with-current-buffer (pop-to-buffer buf)
       (diff-mode)
       (setq-local revert-buffer-function
                   (lambda (_ignore-auto _noconfirm)
                     (let ((inhibit-read-only t))
-                      (erase-buffer)
-                      (vc-git--call buf "show" tag)
-                      (goto-char (point-min)))))
+                      (agitate--vc-git-show-revert buf "show" tag))))
       (goto-char (point-min)))))
 
 (defun agitate--vc-git-format-patch-single-commit ()
@@ -490,7 +529,9 @@ Output the patch file to the return value of the function
 `vc-root-dir'.
 
 The number of revisions in the log is controlled by the user
-option `agitate-log-limit'."
+option `agitate-log-limit'.
+
+For Emacs 29, consider using `vc-prepare-patch'."
   (interactive (list (agitate--vc-git-format-patch-single-commit)))
   ;; TODO 2022-09-27: Handle the output directory better.  Though I am
   ;; not sure how people work with those.  I normally use the root of
@@ -503,7 +544,9 @@ option `agitate-log-limit'."
 ;;;###autoload
 (defun agitate-vc-git-format-patch-n-from-head (number)
   "Format patches covering NUMBER of commits from current HEAD.
-This is the eqvuivalent of: git format-patch -NUMBER."
+This is the eqvuivalent of: git format-patch -NUMBER.
+
+For Emacs 29, consider using `vc-prepare-patch'."
   (interactive (list (read-number "git format-patch -NUMBER: ")))
   (if (natnump number)
       (vc-git--call nil "format-patch" (format "-%d" number))

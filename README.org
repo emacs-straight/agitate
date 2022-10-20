@@ -135,21 +135,23 @@ commits" are documented here: <https://www.conventionalcommits.org/en/v1.0.0/>.
 
 #+findex: agitate-log-edit-informative-mode
 #+vindex: agitate-log-edit-informative-mode
-The ~agitate-log-edit-informative-mode~ is the PROTOTYPE of a global
-minor mode that rearranges the window configuration (layout) while
-bringing up a log-edit buffer (such as what happens when =C-x v v=
+The ~agitate-log-edit-informative-mode~ is a global minor mode that
+rearranges the window configuration (layout) when bringing up a
+~log-edit~ buffer (such as what happens when =C-x v v=
 (~vc-next-action~) is about to commit the changes).  It shows the
-log-edit buffer on the left and the corresponding diff on the right.
+~log-edit~ buffer on the left and the corresponding diff on the right.
 
 #+vindex: agitate-log-edit-informative-show-files
 When the user option ~agitate-log-edit-informative-show-files~ is
 non-nil (the default), the list of files pertinent to the current
-action is shown below the log-edit buffer.
+action is shown below the ~log-edit~ buffer.
 
 #+vindex: agitate-log-edit-informative-show-root-log
+#+vindex: agitate-log-limit
 When the user option ~agitate-log-edit-informative-show-root-log~ is
 non-nil, the root log of the revisions is shown below the window that
-displays the log-edit buffer.
+displays the ~log-edit~ buffer.  Its contents are bound by the value
+of the user option ~agitate-log-limit~.
 
 ** Extras for log-view
 :PROPERTIES:
@@ -179,7 +181,12 @@ displays the log-edit buffer.
 
 #+findex: agitate-vc-git-find-revision
 + Function ~agitate-vc-git-find-revision~ :: Find revision of current
-  file, visiting it in a buffer.  Prompt with completion for the revision.
+  file, visiting it in a buffer.  Prompt with completion for the
+  revision.  The number of revisions in the log is controlled by the
+  user option ~agitate-log-limit~.  Pro tip: if you are using the
+  =embark= package, you can produce a snapshot of the minibuffer
+  prompt.  Then use the resulting buffer to browse through the file's
+  history.
 
 #+findex: agitate-vc-git-show
 #+vindex: agitate-log-limit
@@ -187,12 +194,16 @@ displays the log-edit buffer.
   =git-show(1)= on it. With optional =CURRENT-FILE= as prefix
   argument, limit the commits to those pertaining to the current file.
   The number of revisions in the log is controlled by the user option
-  ~agitate-log-limit~.
+  ~agitate-log-limit~.  Pro tip: if you are using the =embark=
+  package, you can produce a snapshot of the minibuffer prompt.  Then
+  use the resulting buffer to browse through the available commits.
 
 #+findex: agitate-vc-git-show-tag
 + Function ~agitate-vc-git-show-tag~ :: Run =git-show(1)= on Git
   =TAG=.  When called interactively, prompt for TAG using minibuffer
-  completion.
+  completion.  Pro tip: if you are using the =embark= package, you can
+  produce a snapshot of the minibuffer prompt.  Then use the resulting
+  buffer to browse through the available tags.
 
 #+findex: agitate-vc-git-format-patch-single
 + Function ~agitate-vc-git-format-patch-single~ :: Format patch for a
@@ -202,8 +213,8 @@ displays the log-edit buffer.
   commit at point, prompt for =COMMIT= using minibuffer completion.
   Output the patch file to the return value of the function
   ~vc-root-dir~.  The number of revisions in the log is controlled by
-  the user option ~agitate-log-limit~.  Relevant except from the
-  source code:
+  the user option ~agitate-log-limit~.  For Emacs 29, consider using
+  ~vc-prepare-patch~.  Relevant except from the source code:
 
   #+begin_src emacs-lisp
   ;; TODO 2022-09-27: Handle the output directory better.  Though I am
@@ -215,7 +226,8 @@ displays the log-edit buffer.
 #+findex: agitate-vc-git-format-patch-n-from-head
 + Function ~agitate-vc-git-format-patch-n-from-head~ :: Format patches
   covering =NUMBER= of commits from current HEAD.  This is the
-  eqvuivalent of: =git format-patch -NUMBER=.
+  eqvuivalent of: =git format-patch -NUMBER=.  For Emacs 29, consider
+  using ~vc-prepare-patch~.
 
 #+findex: agitate-vc-git-grep
 + Function ~agitate-vc-git-grep~ :: Run =git-grep(1)= for =REGEXP= in
@@ -334,8 +346,10 @@ Everything is in place to set up the package.
 (let ((map global-map))
   (define-key map (kbd "C-x v =") #'agitate-diff-buffer-or-file) ; replace `vc-diff'
   (define-key map (kbd "C-x v g") #'agitate-vc-git-grep) ; replace `vc-annotate'
+  (define-key map (kbd "C-x v f") #'agitate-vc-git-find-revision)
   (define-key map (kbd "C-x v s") #'agitate-vc-git-show)
-  (define-key map (kbd "C-x v c") #'agitate-vc-git-format-patch-single))
+  (define-key map (kbd "C-x v p p") #'agitate-vc-git-format-patch-single)
+  (define-key map (kbd "C-x v p n") #'agitate-vc-git-format-patch-n-from-head))
 (let ((map diff-mode-map))
   (define-key map (kbd "C-c C-b") #'agitate-diff-refine-cycle) ; replace `diff-refine-hunk'
   (define-key map (kbd "C-c C-n") #'agitate-diff-narrow-dwim))
