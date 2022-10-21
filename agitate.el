@@ -282,10 +282,15 @@ user option `log-edit-keep-buffer'."
 (defvar agitate--previous-window-point nil
   "Store the last window `point'.")
 
+(defvar agitate--previous-window nil
+  "Store the last window.")
+
 (defun agitate--log-edit-informative-save-windows ()
   "Save `current-window-configuration'."
-  (setq agitate--previous-window-point (point)
-        agitate--previous-window-configuration (current-window-configuration)))
+  (let ((win (get-buffer-window)))
+    (setq agitate--previous-window win
+          agitate--previous-window-point (window-point win)
+          agitate--previous-window-configuration (current-window-configuration))))
 
 (defun agitate--log-edit-informative-setup ()
   "Set up informative `log-edit' window configuration."
@@ -310,19 +315,32 @@ user option `log-edit-keep-buffer'."
                      display-buffer-alist)))
           (vc-print-root-log))))))
 
+;; FIXME 2022-10-20: Sometimes we get an error like:
+;;
+;; window-normalize-window: #<window 153> is not a live window
+;;
+;; What is the cause?
 (defun agitate--log-edit-informative-restore ()
   "Restore `agitate--previous-window-configuration' and clean state."
   (when agitate--previous-window-configuration
-    (set-window-configuration agitate--previous-window-configuration)
+    (set-window-configuration
+     agitate--previous-window-configuration
+     :dont-set-frame
+     :dont-set-miniwindow)
     (setq agitate--previous-window-configuration nil))
-  (when agitate--previous-window-point
+  (when (and agitate--previous-window
+             agitate--previous-window-point
+             (window-live-p agitate--previous-window))
+    (select-window agitate--previous-window)
     (goto-char agitate--previous-window-point)
-    (setq agitate--previous-window-point nil)))
+    (setq agitate--previous-window nil
+          agitate--previous-window-point nil)))
 
 (defun agitate--log-edit-informative-kill-buffer ()
   "Kill the vc-log buffer."
-  ;; TODO 2022-10-19: More robust way to get the buffer?
-  (kill-buffer (get-buffer "*vc-log*")))
+  ;; TODO 2022-10-19: More robust way to get this buffer?
+  (when-let ((buf (get-buffer "*vc-log*")))
+    (kill-buffer buf)))
 
 ;;;; Commands for log-view (listings of commits)
 
