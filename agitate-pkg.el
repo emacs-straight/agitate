@@ -1,0 +1,2 @@
+;; Generated package description from agitate.el  -*- no-byte-compile: t -*-
+(define-package "agitate" "0.0.20240117.23316" "Extras for diff-mode, vc-git, log-edit, log-view" '((emacs "28.1")) :commit "b1c51b6d52f53d1fd489b40d87f79d333ecbbced" :authors '(("Protesilaos Stavrou" . "info@protesilaos.com")) :maintainer '("Protesilaos Stavrou" . "info@protesilaos.com") :keywords '("convenience" "version control" "git") :url "https://github.com/protesilaos/agitate")
