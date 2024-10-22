@@ -1,4 +1,4 @@
-This is docF4ZzdF.info, produced by makeinfo version 6.8 from
+This is docQjJbVn.info, produced by makeinfo version 6.8 from
 agitate.texi.
 
 INFO-DIR-SECTION Emacs misc features
@@ -7,7 +7,7 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: docF4ZzdF.info,  Node: Top,  Next: Overview,  Up: (dir)
+File: docQjJbVn.info,  Node: Top,  Next: Overview,  Up: (dir)
 
 agitate: Extras for diff-mode, vc-git, log-edit, log-view
 *********************************************************
@@ -69,7 +69,7 @@ Indices
 
 
 
-File: docF4ZzdF.info,  Node: Overview,  Next: Installation,  Prev: Top,  Up: Top
+File: docQjJbVn.info,  Node: Overview,  Next: Installation,  Prev: Top,  Up: Top
 
 1 Overview
 **********
@@ -90,7 +90,7 @@ Control framework and its accoutrements (‘diff-mode.el’, ‘log-view.el’,
 * Extras for vc-git::
 
 
-File: docF4ZzdF.info,  Node: Extras for diff-mode,  Next: Extras for log-edit,  Up: Overview
+File: docQjJbVn.info,  Node: Extras for diff-mode,  Next: Extras for log-edit,  Up: Overview
 
 1.1 Extras for diff-mode
 ========================
@@ -122,7 +122,7 @@ Function ‘agitate-diff-enable-outline-minor-mode’
      ‘diff-mode-hook’.
 
 
-File: docF4ZzdF.info,  Node: Extras for log-edit,  Next: Extras for log-view,  Prev: Extras for diff-mode,  Up: Overview
+File: docQjJbVn.info,  Node: Extras for log-edit,  Next: Extras for log-view,  Prev: Extras for diff-mode,  Up: Overview
 
 1.2 Extras for log-edit
 =======================
@@ -164,7 +164,7 @@ commits” are documented here:
 * Informative log-edit window configuration mode::
 
 
-File: docF4ZzdF.info,  Node: Informative log-edit window configuration mode,  Up: Extras for log-edit
+File: docQjJbVn.info,  Node: Informative log-edit window configuration mode,  Up: Extras for log-edit
 
 1.2.1 Informative log-edit window configuration mode
 ----------------------------------------------------
@@ -185,7 +185,7 @@ displays the ‘log-edit’ buffer.  Its contents are bound by the value of
 the user option ‘agitate-log-limit’.
 
 
-File: docF4ZzdF.info,  Node: Extras for log-view,  Next: Extras for vc-git,  Prev: Extras for log-edit,  Up: Overview
+File: docQjJbVn.info,  Node: Extras for log-view,  Next: Extras for vc-git,  Prev: Extras for log-edit,  Up: Overview
 
 1.3 Extras for log-view
 =======================
@@ -205,7 +205,7 @@ Function ‘agitate-log-view-kill-revision-expanded’
      point (developers can also check the private functions it uses).
 
 
-File: docF4ZzdF.info,  Node: Extras for vc-git,  Prev: Extras for log-view,  Up: Overview
+File: docQjJbVn.info,  Node: Extras for vc-git,  Prev: Extras for log-view,  Up: Overview
 
 1.4 Extras for vc-git
 =====================
@@ -292,7 +292,7 @@ Function ‘agitate-vc-git-push-prompt-for-remote’
           ;; behaviour.
 
 
-File: docF4ZzdF.info,  Node: Installation,  Next: Sample configuration,  Prev: Overview,  Up: Top
+File: docQjJbVn.info,  Node: Installation,  Next: Sample configuration,  Prev: Overview,  Up: Top
 
 2 Installation
 **************
@@ -303,7 +303,7 @@ File: docF4ZzdF.info,  Node: Installation,  Next: Sample configuration,  Prev: O
 * Manual installation::
 
 
-File: docF4ZzdF.info,  Node: GNU ELPA package,  Next: Manual installation,  Up: Installation
+File: docQjJbVn.info,  Node: GNU ELPA package,  Next: Manual installation,  Up: Installation
 
 2.1 GNU ELPA package
 ====================
@@ -322,7 +322,7 @@ archive.  Read:
 <https://protesilaos.com/codelog/2022-05-13-emacs-elpa-devel/>.
 
 
-File: docF4ZzdF.info,  Node: Manual installation,  Prev: GNU ELPA package,  Up: Installation
+File: docQjJbVn.info,  Node: Manual installation,  Prev: GNU ELPA package,  Up: Installation
 
 2.2 Manual installation
 =======================
@@ -349,7 +349,7 @@ following commands in a shell prompt:
    Everything is in place to set up the package.
 
 
-File: docF4ZzdF.info,  Node: Sample configuration,  Next: COPYING,  Prev: Installation,  Up: Top
+File: docQjJbVn.info,  Node: Sample configuration,  Next: COPYING,  Prev: Installation,  Up: Top
 
 3 Sample configuration
 **********************
@@ -392,7 +392,7 @@ File: docF4ZzdF.info,  Node: Sample configuration,  Next: COPYING,  Prev: Instal
        (define-key map (kbd "C-c C-i C-c") #'agitate-log-edit-conventional-commit))
 
 
-File: docF4ZzdF.info,  Node: COPYING,  Next: GNU Free Documentation License,  Prev: Sample configuration,  Up: Top
+File: docQjJbVn.info,  Node: COPYING,  Next: GNU Free Documentation License,  Prev: Sample configuration,  Up: Top
 
 4 COPYING
 *********
@@ -411,7 +411,7 @@ Copyright (C) 2022-2023 Free Software Foundation, Inc.
      modify this GNU manual.”
 
 
-File: docF4ZzdF.info,  Node: GNU Free Documentation License,  Next: Indices,  Prev: COPYING,  Up: Top
+File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Prev: COPYING,  Up: Top
 
 5 GNU Free Documentation License
 ********************************
@@ -893,7 +893,7 @@ software license, such as the GNU General Public License, to permit
 their use in free software.
 
 
-File: docF4ZzdF.info,  Node: Indices,  Prev: GNU Free Documentation License,  Up: Top
+File: docQjJbVn.info,  Node: Indices,  Prev: GNU Free Documentation License,  Up: Top
 
 6 Indices
 *********
@@ -905,7 +905,7 @@ File: docF4ZzdF.info,  Node: Indices,  Prev: GNU Free Documentation License,  Up
 * Concept index::
 
 
-File: docF4ZzdF.info,  Node: Function index,  Next: Variable index,  Up: Indices
+File: docQjJbVn.info,  Node: Function index,  Next: Variable index,  Up: Indices
 
 6.1 Function index
 ==================
@@ -937,7 +937,7 @@ File: docF4ZzdF.info,  Node: Function index,  Next: Variable index,  Up: Indices
 * agitate-vc-git-show-tag:               Extras for vc-git.    (line 23)
 
 
-File: docF4ZzdF.info,  Node: Variable index,  Next: Concept index,  Prev: Function index,  Up: Indices
+File: docQjJbVn.info,  Node: Variable index,  Next: Concept index,  Prev: Function index,  Up: Indices
 
 6.2 Variable index
 ==================
@@ -959,7 +959,7 @@ File: docF4ZzdF.info,  Node: Variable index,  Next: Concept index,  Prev: Functi
 * agitate-log-limit <1>:                 Extras for vc-git.    (line 14)
 
 
-File: docF4ZzdF.info,  Node: Concept index,  Prev: Variable index,  Up: Indices
+File: docQjJbVn.info,  Node: Concept index,  Prev: Variable index,  Up: Indices
 
 6.3 Concept index
 =================
