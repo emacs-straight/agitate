@@ -1,4 +1,4 @@
-This is docQjJbVn.info, produced by makeinfo version 6.8 from
+This is agitate.info, produced by makeinfo version 7.2 from
 agitate.texi.
 
 INFO-DIR-SECTION Emacs misc features
@@ -7,14 +7,14 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: docQjJbVn.info,  Node: Top,  Next: Overview,  Up: (dir)
+File: agitate.info,  Node: Top,  Next: Overview,  Up: (dir)
 
 agitate: Extras for diff-mode, vc-git, log-edit, log-view
 *********************************************************
 
-This manual, written by Protesilaos Stavrou, describes the customization
-options for the Emacs package called ‘agitate’ (or ‘agitate.el’), and
-provides every other piece of information pertinent to it.
+This manual, written by Protesilaos, describes the customization options
+for the Emacs package called ‘agitate’ (or ‘agitate.el’), and provides
+every other piece of information pertinent to it.
 
    The documentation furnished herein corresponds to stable version
 0.0.0, released on N/A.  Any reference to a newer feature which does not
@@ -43,7 +43,7 @@ of it.
 * GNU Free Documentation License::
 * Indices::
 
-— The Detailed Node Listing —
+-- The Detailed Node Listing --
 
 Overview
 
@@ -67,9 +67,8 @@ Indices
 * Variable index::
 * Concept index::
 
-
 
-File: docQjJbVn.info,  Node: Overview,  Next: Installation,  Prev: Top,  Up: Top
+File: agitate.info,  Node: Overview,  Next: Installation,  Prev: Top,  Up: Top
 
 1 Overview
 **********
@@ -90,7 +89,7 @@ Control framework and its accoutrements (‘diff-mode.el’, ‘log-view.el’,
 * Extras for vc-git::
 
 
-File: docQjJbVn.info,  Node: Extras for diff-mode,  Next: Extras for log-edit,  Up: Overview
+File: agitate.info,  Node: Extras for diff-mode,  Next: Extras for log-edit,  Up: Overview
 
 1.1 Extras for diff-mode
 ========================
@@ -122,7 +121,7 @@ Function ‘agitate-diff-enable-outline-minor-mode’
      ‘diff-mode-hook’.
 
 
-File: docQjJbVn.info,  Node: Extras for log-edit,  Next: Extras for log-view,  Prev: Extras for diff-mode,  Up: Overview
+File: agitate.info,  Node: Extras for log-edit,  Next: Extras for log-view,  Prev: Extras for diff-mode,  Up: Overview
 
 1.2 Extras for log-edit
 =======================
@@ -155,8 +154,8 @@ Variable ‘agitate-log-edit-conventional-commits-collection’
      completion candidates for ‘agitate-log-edit-conventional-commit’.
 
    The emoji commits are inspired by <https://gitmoji.dev/>, though I
-think most of those are superfluous.  Less is more.  The “conventional
-commits” are documented here:
+think most of those are superfluous.  Less is more.  The "conventional
+commits" are documented here:
 <https://www.conventionalcommits.org/en/v1.0.0/>.
 
 * Menu:
@@ -164,7 +163,7 @@ commits” are documented here:
 * Informative log-edit window configuration mode::
 
 
-File: docQjJbVn.info,  Node: Informative log-edit window configuration mode,  Up: Extras for log-edit
+File: agitate.info,  Node: Informative log-edit window configuration mode,  Up: Extras for log-edit
 
 1.2.1 Informative log-edit window configuration mode
 ----------------------------------------------------
@@ -185,7 +184,7 @@ displays the ‘log-edit’ buffer.  Its contents are bound by the value of
 the user option ‘agitate-log-limit’.
 
 
-File: docQjJbVn.info,  Node: Extras for log-view,  Next: Extras for vc-git,  Prev: Extras for log-edit,  Up: Overview
+File: agitate.info,  Node: Extras for log-view,  Next: Extras for vc-git,  Prev: Extras for log-edit,  Up: Overview
 
 1.3 Extras for log-view
 =======================
@@ -205,7 +204,7 @@ Function ‘agitate-log-view-kill-revision-expanded’
      point (developers can also check the private functions it uses).
 
 
-File: docQjJbVn.info,  Node: Extras for vc-git,  Prev: Extras for log-view,  Up: Overview
+File: agitate.info,  Node: Extras for vc-git,  Prev: Extras for log-view,  Up: Overview
 
 1.4 Extras for vc-git
 =====================
@@ -216,7 +215,7 @@ Function ‘agitate-vc-git-find-revision’
      log is controlled by the user option ‘agitate-log-limit’.  Pro tip:
      if you are using the ‘embark’ package, you can produce a snapshot
      of the minibuffer prompt.  Then use the resulting buffer to browse
-     through the file’s history.
+     through the file's history.
 
 Function ‘agitate-vc-git-show’
      Prompt for commit and run ‘git-show(1)’ on it.  With optional
@@ -292,7 +291,7 @@ Function ‘agitate-vc-git-push-prompt-for-remote’
           ;; behaviour.
 
 
-File: docQjJbVn.info,  Node: Installation,  Next: Sample configuration,  Prev: Overview,  Up: Top
+File: agitate.info,  Node: Installation,  Next: Sample configuration,  Prev: Overview,  Up: Top
 
 2 Installation
 **************
@@ -303,7 +302,7 @@ File: docQjJbVn.info,  Node: Installation,  Next: Sample configuration,  Prev: O
 * Manual installation::
 
 
-File: docQjJbVn.info,  Node: GNU ELPA package,  Next: Manual installation,  Up: Installation
+File: agitate.info,  Node: GNU ELPA package,  Next: Manual installation,  Up: Installation
 
 2.1 GNU ELPA package
 ====================
@@ -322,7 +321,7 @@ archive.  Read:
 <https://protesilaos.com/codelog/2022-05-13-emacs-elpa-devel/>.
 
 
-File: docQjJbVn.info,  Node: Manual installation,  Prev: GNU ELPA package,  Up: Installation
+File: agitate.info,  Node: Manual installation,  Prev: GNU ELPA package,  Up: Installation
 
 2.2 Manual installation
 =======================
@@ -349,7 +348,7 @@ following commands in a shell prompt:
    Everything is in place to set up the package.
 
 
-File: docQjJbVn.info,  Node: Sample configuration,  Next: COPYING,  Prev: Installation,  Up: Top
+File: agitate.info,  Node: Sample configuration,  Next: COPYING,  Prev: Installation,  Up: Top
 
 3 Sample configuration
 **********************
@@ -392,7 +391,7 @@ File: docQjJbVn.info,  Node: Sample configuration,  Next: COPYING,  Prev: Instal
        (define-key map (kbd "C-c C-i C-c") #'agitate-log-edit-conventional-commit))
 
 
-File: docQjJbVn.info,  Node: COPYING,  Next: GNU Free Documentation License,  Prev: Sample configuration,  Up: Top
+File: agitate.info,  Node: COPYING,  Next: GNU Free Documentation License,  Prev: Sample configuration,  Up: Top
 
 4 COPYING
 *********
@@ -411,7 +410,7 @@ Copyright (C) 2022-2023 Free Software Foundation, Inc.
      modify this GNU manual.”
 
 
-File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Prev: COPYING,  Up: Top
+File: agitate.info,  Node: GNU Free Documentation License,  Next: Indices,  Prev: COPYING,  Up: Top
 
 5 GNU Free Documentation License
 ********************************
@@ -434,7 +433,7 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      author and publisher a way to get credit for their work, while not
      being considered responsible for modifications made by others.
 
-     This License is a kind of “copyleft”, which means that derivative
+     This License is a kind of "copyleft", which means that derivative
      works of the document must themselves be free in the same sense.
      It complements the GNU General Public License, which is a copyleft
      license designed for free software.
@@ -455,18 +454,18 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      be distributed under the terms of this License.  Such a notice
      grants a world-wide, royalty-free license, unlimited in duration,
      to use that work under the conditions stated herein.  The
-     “Document”, below, refers to any such manual or work.  Any member
-     of the public is a licensee, and is addressed as “you”.  You accept
+     "Document", below, refers to any such manual or work.  Any member
+     of the public is a licensee, and is addressed as "you".  You accept
      the license if you copy, modify or distribute the work in a way
      requiring permission under copyright law.
 
-     A “Modified Version” of the Document means any work containing the
+     A "Modified Version" of the Document means any work containing the
      Document or a portion of it, either copied verbatim, or with
      modifications and/or translated into another language.
 
-     A “Secondary Section” is a named appendix or a front-matter section
+     A "Secondary Section" is a named appendix or a front-matter section
      of the Document that deals exclusively with the relationship of the
-     publishers or authors of the Document to the Document’s overall
+     publishers or authors of the Document to the Document's overall
      subject (or to related matters) and contains nothing that could
      fall directly within that overall subject.  (Thus, if the Document
      is in part a textbook of mathematics, a Secondary Section may not
@@ -475,7 +474,7 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      of legal, commercial, philosophical, ethical or political position
      regarding them.
 
-     The “Invariant Sections” are certain Secondary Sections whose
+     The "Invariant Sections" are certain Secondary Sections whose
      titles are designated, as being those of Invariant Sections, in the
      notice that says that the Document is released under this License.
      If a section does not fit the above definition of Secondary then it
@@ -483,13 +482,13 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      contain zero Invariant Sections.  If the Document does not identify
      any Invariant Sections then there are none.
 
-     The “Cover Texts” are certain short passages of text that are
+     The "Cover Texts" are certain short passages of text that are
      listed, as Front-Cover Texts or Back-Cover Texts, in the notice
      that says that the Document is released under this License.  A
      Front-Cover Text may be at most 5 words, and a Back-Cover Text may
      be at most 25 words.
 
-     A “Transparent” copy of the Document means a machine-readable copy,
+     A "Transparent" copy of the Document means a machine-readable copy,
      represented in a format whose specification is available to the
      general public, that is suitable for revising the document
      straightforwardly with generic text editors or (for images composed
@@ -501,7 +500,7 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      been arranged to thwart or discourage subsequent modification by
      readers is not Transparent.  An image format is not Transparent if
      used for any substantial amount of text.  A copy that is not
-     “Transparent” is called “Opaque”.
+     "Transparent" is called "Opaque".
 
      Examples of suitable formats for Transparent copies include plain
      ASCII without markup, Texinfo input format, LaTeX input format,
@@ -514,23 +513,23 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      the machine-generated HTML, PostScript or PDF produced by some word
      processors for output purposes only.
 
-     The “Title Page” means, for a printed book, the title page itself,
+     The "Title Page" means, for a printed book, the title page itself,
      plus such following pages as are needed to hold, legibly, the
      material this License requires to appear in the title page.  For
-     works in formats which do not have any title page as such, “Title
-     Page” means the text near the most prominent appearance of the
-     work’s title, preceding the beginning of the body of the text.
+     works in formats which do not have any title page as such, "Title
+     Page" means the text near the most prominent appearance of the
+     work's title, preceding the beginning of the body of the text.
 
-     The “publisher” means any person or entity that distributes copies
+     The "publisher" means any person or entity that distributes copies
      of the Document to the public.
 
-     A section “Entitled XYZ” means a named subunit of the Document
+     A section "Entitled XYZ" means a named subunit of the Document
      whose title either is precisely XYZ or contains XYZ in parentheses
      following text that translates XYZ in another language.  (Here XYZ
      stands for a specific section name mentioned below, such as
-     “Acknowledgements”, “Dedications”, “Endorsements”, or “History”.)
-     To “Preserve the Title” of such a section when you modify the
-     Document means that it remains a section “Entitled XYZ” according
+     "Acknowledgements", "Dedications", "Endorsements", or "History".)
+     To "Preserve the Title" of such a section when you modify the
+     Document means that it remains a section "Entitled XYZ" according
      to this definition.
 
      The Document may include Warranty Disclaimers next to the notice
@@ -560,7 +559,7 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
 
      If you publish printed copies (or copies in media that commonly
      have printed covers) of the Document, numbering more than 100, and
-     the Document’s license notice requires Cover Texts, you must
+     the Document's license notice requires Cover Texts, you must
      enclose the copies in covers that carry, clearly and legibly, all
      these Cover Texts: Front-Cover Texts on the front cover, and
      Back-Cover Texts on the back cover.  Both covers must also clearly
@@ -632,15 +631,15 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
           the Addendum below.
 
        G. Preserve in that license notice the full lists of Invariant
-          Sections and required Cover Texts given in the Document’s
+          Sections and required Cover Texts given in the Document's
           license notice.
 
        H. Include an unaltered copy of this License.
 
-       I. Preserve the section Entitled “History”, Preserve its Title,
+       I. Preserve the section Entitled "History", Preserve its Title,
           and add to it an item stating at least the title, year, new
           authors, and publisher of the Modified Version as given on the
-          Title Page.  If there is no section Entitled “History” in the
+          Title Page.  If there is no section Entitled "History" in the
           Document, create one stating the title, year, authors, and
           publisher of the Document as given on its Title Page, then add
           an item describing the Modified Version as stated in the
@@ -650,12 +649,12 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
           for public access to a Transparent copy of the Document, and
           likewise the network locations given in the Document for
           previous versions it was based on.  These may be placed in the
-          “History” section.  You may omit a network location for a work
+          "History" section.  You may omit a network location for a work
           that was published at least four years before the Document
           itself, or if the original publisher of the version it refers
           to gives permission.
 
-       K. For any section Entitled “Acknowledgements” or “Dedications”,
+       K. For any section Entitled "Acknowledgements" or "Dedications",
           Preserve the Title of the section, and preserve in the section
           all the substance and tone of each of the contributor
           acknowledgements and/or dedications given therein.
@@ -664,11 +663,11 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
           in their text and in their titles.  Section numbers or the
           equivalent are not considered part of the section titles.
 
-       M. Delete any section Entitled “Endorsements”.  Such a section
+       M. Delete any section Entitled "Endorsements".  Such a section
           may not be included in the Modified Version.
 
        N. Do not retitle any existing section to be Entitled
-          “Endorsements” or to conflict in title with any Invariant
+          "Endorsements" or to conflict in title with any Invariant
           Section.
 
        O. Preserve any Warranty Disclaimers.
@@ -677,15 +676,15 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      appendices that qualify as Secondary Sections and contain no
      material copied from the Document, you may at your option designate
      some or all of these sections as invariant.  To do this, add their
-     titles to the list of Invariant Sections in the Modified Version’s
+     titles to the list of Invariant Sections in the Modified Version's
      license notice.  These titles must be distinct from any other
      section titles.
 
-     You may add a section Entitled “Endorsements”, provided it contains
+     You may add a section Entitled "Endorsements", provided it contains
      nothing but endorsements of your Modified Version by various
-     parties—for example, statements of peer review or that the text has
-     been approved by an organization as the authoritative definition of
-     a standard.
+     parties--for example, statements of peer review or that the text
+     has been approved by an organization as the authoritative
+     definition of a standard.
 
      You may add a passage of up to five words as a Front-Cover Text,
      and a passage of up to 25 words as a Back-Cover Text, to the end of
@@ -723,10 +722,10 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      combined work.
 
      In the combination, you must combine any sections Entitled
-     “History” in the various original documents, forming one section
-     Entitled “History”; likewise combine any sections Entitled
-     “Acknowledgements”, and any sections Entitled “Dedications”.  You
-     must delete all sections Entitled “Endorsements.”
+     "History" in the various original documents, forming one section
+     Entitled "History"; likewise combine any sections Entitled
+     "Acknowledgements", and any sections Entitled "Dedications".  You
+     must delete all sections Entitled "Endorsements."
 
   6. COLLECTIONS OF DOCUMENTS
 
@@ -747,16 +746,16 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
 
      A compilation of the Document or its derivatives with other
      separate and independent documents or works, in or on a volume of a
-     storage or distribution medium, is called an “aggregate” if the
+     storage or distribution medium, is called an "aggregate" if the
      copyright resulting from the compilation is not used to limit the
-     legal rights of the compilation’s users beyond what the individual
+     legal rights of the compilation's users beyond what the individual
      works permit.  When the Document is included in an aggregate, this
      License does not apply to the other works in the aggregate which
      are not themselves derivative works of the Document.
 
      If the Cover Text requirement of section 3 is applicable to these
      copies of the Document, then if the Document is less than one half
-     of the entire aggregate, the Document’s Cover Texts may be placed
+     of the entire aggregate, the Document's Cover Texts may be placed
      on covers that bracket the Document within the aggregate, or the
      electronic equivalent of covers if the Document is in electronic
      form.  Otherwise they must appear on printed covers that bracket
@@ -778,8 +777,8 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      this License or a notice or disclaimer, the original version will
      prevail.
 
-     If a section in the Document is Entitled “Acknowledgements”,
-     “Dedications”, or “History”, the requirement (section 4) to
+     If a section in the Document is Entitled "Acknowledgements",
+     "Dedications", or "History", the requirement (section 4) to
      Preserve its Title (section 1) will typically require changing the
      actual title.
 
@@ -820,7 +819,7 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
 
      Each version of the License is given a distinguishing version
      number.  If the Document specifies that a particular numbered
-     version of this License “or any later version” applies to it, you
+     version of this License "or any later version" applies to it, you
      have the option of following the terms and conditions either of
      that specified version or of any later version that has been
      published (not as a draft) by the Free Software Foundation.  If the
@@ -828,29 +827,29 @@ File: docQjJbVn.info,  Node: GNU Free Documentation License,  Next: Indices,  Pr
      choose any version ever published (not as a draft) by the Free
      Software Foundation.  If the Document specifies that a proxy can
      decide which future versions of this License can be used, that
-     proxy’s public statement of acceptance of a version permanently
+     proxy's public statement of acceptance of a version permanently
      authorizes you to choose that version for the Document.
 
   11. RELICENSING
 
-     “Massive Multiauthor Collaboration Site” (or “MMC Site”) means any
+     "Massive Multiauthor Collaboration Site" (or "MMC Site") means any
      World Wide Web server that publishes copyrightable works and also
      provides prominent facilities for anybody to edit those works.  A
      public wiki that anybody can edit is an example of such a server.
-     A “Massive Multiauthor Collaboration” (or “MMC”) contained in the
+     A "Massive Multiauthor Collaboration" (or "MMC") contained in the
      site means any set of copyrightable works thus published on the MMC
      site.
 
-     “CC-BY-SA” means the Creative Commons Attribution-Share Alike 3.0
+     "CC-BY-SA" means the Creative Commons Attribution-Share Alike 3.0
      license published by Creative Commons Corporation, a not-for-profit
      corporation with a principal place of business in San Francisco,
      California, as well as future copyleft versions of that license
      published by that same organization.
 
-     “Incorporate” means to publish or republish a Document, in whole or
+     "Incorporate" means to publish or republish a Document, in whole or
      in part, as part of another Document.
 
-     An MMC is “eligible for relicensing” if it is licensed under this
+     An MMC is "eligible for relicensing" if it is licensed under this
      License, and if all works that were first published under this
      License somewhere other than this MMC, and subsequently
      incorporated in whole or in part into the MMC, (1) had no cover
@@ -877,7 +876,7 @@ notices just after the title page:
        Free Documentation License''.
 
    If you have Invariant Sections, Front-Cover Texts and Back-Cover
-Texts, replace the “with...Texts.” line with this:
+Texts, replace the "with...Texts." line with this:
 
          with the Invariant Sections being LIST THEIR TITLES, with
          the Front-Cover Texts being LIST, and with the Back-Cover Texts
@@ -893,7 +892,7 @@ software license, such as the GNU General Public License, to permit
 their use in free software.
 
 
-File: docQjJbVn.info,  Node: Indices,  Prev: GNU Free Documentation License,  Up: Top
+File: agitate.info,  Node: Indices,  Prev: GNU Free Documentation License,  Up: Top
 
 6 Indices
 *********
@@ -905,7 +904,7 @@ File: docQjJbVn.info,  Node: Indices,  Prev: GNU Free Documentation License,  Up
 * Concept index::
 
 
-File: docQjJbVn.info,  Node: Function index,  Next: Variable index,  Up: Indices
+File: agitate.info,  Node: Function index,  Next: Variable index,  Up: Indices
 
 6.1 Function index
 ==================
@@ -937,7 +936,7 @@ File: docQjJbVn.info,  Node: Function index,  Next: Variable index,  Up: Indices
 * agitate-vc-git-show-tag:               Extras for vc-git.    (line 23)
 
 
-File: docQjJbVn.info,  Node: Variable index,  Next: Concept index,  Prev: Function index,  Up: Indices
+File: agitate.info,  Node: Variable index,  Next: Concept index,  Prev: Function index,  Up: Indices
 
 6.2 Variable index
 ==================
@@ -959,7 +958,7 @@ File: docQjJbVn.info,  Node: Variable index,  Next: Concept index,  Prev: Functi
 * agitate-log-limit <1>:                 Extras for vc-git.    (line 14)
 
 
-File: docQjJbVn.info,  Node: Concept index,  Prev: Variable index,  Up: Indices
+File: agitate.info,  Node: Concept index,  Prev: Variable index,  Up: Indices
 
 6.3 Concept index
 =================
@@ -969,30 +968,30 @@ File: docQjJbVn.info,  Node: Concept index,  Prev: Variable index,  Up: Indices
 
 * Installation instructions:             Installation.          (line 6)
 
-
 
 Tag Table:
-Node: Top229
-Node: Overview1837
-Node: Extras for diff-mode2465
-Node: Extras for log-edit3856
-Node: Informative log-edit window configuration mode5653
-Node: Extras for log-view6663
-Node: Extras for vc-git7614
-Node: Installation12231
-Node: GNU ELPA package12418
-Node: Manual installation12980
-Node: Sample configuration13753
-Node: COPYING15794
-Node: GNU Free Documentation License16561
-Node: Indices41895
-Node: Function index42071
-Node: Variable index43820
-Node: Concept index44934
+Node: Top227
+Node: Overview1822
+Node: Extras for diff-mode2448
+Node: Extras for log-edit3837
+Node: Informative log-edit window configuration mode5628
+Node: Extras for log-view6636
+Node: Extras for vc-git7585
+Node: Installation12198
+Node: GNU ELPA package12383
+Node: Manual installation12943
+Node: Sample configuration13714
+Node: COPYING15753
+Node: GNU Free Documentation License16518
+Node: Indices41649
+Node: Function index41823
+Node: Variable index43570
+Node: Concept index44682
 
 End Tag Table
 
 
 Local Variables:
 coding: utf-8
+Info-documentlanguage: en
 End:

@@ -1,2 +1,2 @@
-;; Generated package description from agitate.el  -*- no-byte-compile: t -*-
-(define-package "agitate" "0.0.20241021.65229" "Extras for diff-mode, vc-git, log-edit, log-view" '((emacs "28.1")) :commit "29670e56b6ce227be8249fde906c1d7eeb96d3aa" :authors '(("Protesilaos Stavrou" . "info@protesilaos.com")) :maintainer '("Protesilaos Stavrou" . "info@protesilaos.com") :keywords '("convenience" "version control" "git") :url "https://github.com/protesilaos/agitate")
+;; Generated package description from agitate.el  -*- mode: lisp-data; no-byte-compile: t; lexical-binding:t -*-
+(define-package "agitate" "0.0.20260424.102016" "Extras for diff-mode, vc-git, log-edit, log-view" '((emacs "28.1")) :commit "d2c1cc4d7776fed96a2552501e8edf22b593b851" :authors '(("Protesilaos" . "info@protesilaos.com")) :maintainer '("Protesilaos" . "info@protesilaos.com") :keywords '("convenience" "version control" "git") :url "https://github.com/protesilaos/agitate")
